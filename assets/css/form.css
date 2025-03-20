@@ -1,0 +1,88 @@
+h1{
+    display: none;
+}
+
+.efb-multistep{
+    width:500px;
+    margin: 0 auto;
+    padding:25px;
+    border:solid 1px;
+    margin:25px auto;
+    border-radius:10px;
+}
+
+.efb-multistep label{
+    color:black;
+    font-family: inter;
+}
+
+.efb-steps {
+    margin-bottom:20px
+}
+
+.efb-steps ul{
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    margin:0;
+    padding: 0;
+    gap:10px
+}
+.efb-steps li{
+    padding: 0.4em 0.8em;
+    background-color: #000;
+    color:white;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    flex-grow:1;
+    cursor: pointer;
+    opacity:0.4
+}
+.efb-steps li.active{
+    opacity:1;
+}
+
+.emu-btn{
+    padding: 0.8em 0.8em;
+    width:100%;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.emu-btn-primary{
+    background-color: #000;
+    color:white;
+}
+
+.emu-notices{
+    padding: 20px 14px;
+    margin-bottom: 10px;
+    border:solid 2px;
+    background-color:#d6f0fd;
+    color:#1958a0;
+    border-color:#a9d6f5;
+    font-weight: 600;
+}
+
+.emu-notices-danger{
+
+    background-color:#ffe1e3;
+    color:#ff4153;
+    border-color:#fd99a4
+
+}
+
+.emu-notices-success{
+
+    background-color:#c5f2d7;
+    color:#109449;
+    border-color:#a3e4c0
+
+}
