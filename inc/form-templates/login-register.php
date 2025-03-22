@@ -155,7 +155,7 @@ function efb_login_register(){
                         </div>
                        
                         <input type="hidden" value="<?php echo esc_url(home_url( parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) )); ?>" name="formUrl">
-
+  
                         <div class="efb-form-group">
                             <button class="emu-btn emu-btn-primary">Enviar e-mail</button>
                         </div>
@@ -163,11 +163,13 @@ function efb_login_register(){
                     </form>
                 </div>
             </div>
-
-        <?php
-    
+            
+            <?php
 }
+
 function efbLoginScript() {
+
+    
 
     wp_enqueue_style(
         'emu-login-handler',
@@ -199,3 +201,8 @@ efbLoginScript();
 
 
 }
+
+wp_enqueue_script(
+    'google-recaptcha',
+    'https://www.google.com/recaptcha/api.js?render=6LdvVfoqAAAAAIUxyeWpcnjDAlQbV7Lcu6rH4AQt'
+);

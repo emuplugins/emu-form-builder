@@ -3,6 +3,8 @@
 // endpoint emu_plugins/v1/login/ da rest api do wordpress.
 // ===============================================
 
+const siteKey = '6LdvVfoqAAAAAIUxyeWpcnjDAlQbV7Lcu6rH4AQt';
+
 const efbLoginForm = document.getElementById('efb-login-form')
 const efbRegisterForm = document.getElementById('efb-register-form')
 const efbResetPasswordForm = document.getElementById('efb-reset-password-form')
@@ -26,9 +28,9 @@ function efbTryLogin(formValues){
     .then(data => {
         if (data.ok) {
             efbReturnResponse('Login bem sucedido. Bem-vindo de volta, ' + data.name + ' !', 'emu-notices-success', true)
-            setTimeout(() => {
-                location.reload();
-        }, 3000);
+        //     setTimeout(() => {
+        //         location.reload();
+        // }, 3000);
         }
         if (data.error) {
             efbReturnResponse(data.error, 'emu-notices-danger', true)
@@ -118,7 +120,6 @@ function efbTryResetPassword(formValues){
 
 }
 
-
 // Change Password
 
 function efbTryChangePassword(formValues){
@@ -174,19 +175,20 @@ function efbReturnResponse(message = null, type = null, clearNotices = false) {
     }
 }
 
-
-
 // ACTIONS
 if (efbLoginForm){
 
+    makeRecaptcha(efbLoginForm.id, siteKey)
     efbLoginForm.addEventListener('submit', (e) =>{
     
         e.preventDefault()
-    
+
         const formData = new FormData(efbLoginForm);
     
         const formValues = Object.fromEntries(formData.entries());
-    
+
+        verifyRecaptchaScore(formValues)
+
         efbTryLogin(formValues)
     
     })
@@ -234,4 +236,51 @@ if (efbChangePasswordForm){
         efbTryChangePassword(formValues)
     
     })
+}
+
+
+function makeRecaptcha(formId, siteKey) {
+    
+    grecaptcha.ready(function() {
+
+        grecaptcha.execute(siteKey, { action: 'login' }).then(function(recaptchaToken) {
+
+            // Adiciona o token gerado ao formulário
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'recaptcha_token';
+            input.value = recaptchaToken;  // Use um nome diferente para o token retornado
+            document.getElementById(formId).appendChild(input);
+    
+        });
+
+    })
+}
+
+
+function verifyRecaptchaScore(token){
+    
+    fetch(apiData.url + 'recaptcha-verify', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-WP-Nonce': apiData.nonce,
+        },
+        body: JSON.stringify(token)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        console.log(data)
+        
+        if (data.ok) {
+            console.log('ok')
+        }
+        if (data.error) {
+            console.log(data.error)
+        }
+    })
+    .catch(error => {
+        console.log('error')
+    });
 }
