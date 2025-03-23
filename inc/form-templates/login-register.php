@@ -40,6 +40,8 @@ function efbLoginScript() {
 // Retorna o formulário com os estilos e scripts incorporados
 function efb_login_register(){
 
+    $gSiteKey = '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7';
+
     // Caso estivermos tentando recuperar a senha... 
     if ( isset( $_GET['efb'] ) && $_GET['efb'] === 'rp' ) {
 
@@ -131,7 +133,7 @@ function efb_login_register(){
                 </div>
 
                 <div class="efb-form-group">
-                    <div class="g-recaptcha" data-sitekey="6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7"></div>
+                    <div class="g-recaptcha" data-sitekey="<?php echo $gSiteKey ?>"></div>
                 </div>
 
                 <div class="efb-form-group">
@@ -165,6 +167,10 @@ function efb_login_register(){
                     <label for="">Repita a senha</label>
                     <input type="text" name="passwordConfirm">
                 </div>
+
+                <div class="efb-form-group">
+                    <div class="g-recaptcha" data-sitekey="<?php echo $gSiteKey ?>"></div>
+                </div>
                 
                 <div class="efb-form-group">
                     <button class="emu-btn emu-btn-primary">Registrar</button>
@@ -185,7 +191,7 @@ function efb_login_register(){
                 
                 <input type="hidden" value="<?php echo esc_url(home_url( parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) )); ?>" name="formUrl">
 
-                <div class="g-recaptcha" data-sitekey="6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7"></div>
+                <div class="g-recaptcha" data-sitekey="<?php echo $gSiteKey ?>"></div>
 
                 <div class="efb-form-group">
                     <button class="emu-btn emu-btn-primary">Enviar e-mail</button>

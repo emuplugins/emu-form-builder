@@ -7,12 +7,16 @@ const efbChangePasswordForm = document.getElementById('efb-change-password-form'
 
 // FUNCTIONS
 
-function validarRecaptcha(){
-    return false;
+function recaptchaVerify(id){
+    if(grecaptcha.getResponse(id) == "") {
+        efbReturnResponse('Confirme que você não é um robô.','emu-notices-danger');
+        return false;
+    }
+    return true;
 }
 
 // NOTICES
-function efbReturnResponse(message = null, type = null, clearNotices = false) {
+function efbReturnResponse(message = null, cssClass = null, clearNotices = true) {
     const noticesElement = document.querySelector('#efb-notices');
 
     if(clearNotices){
@@ -23,7 +27,7 @@ function efbReturnResponse(message = null, type = null, clearNotices = false) {
     const noticeDiv = document.createElement('div');
     
     // Adicionar a classe 'emu-notice' e a classe do tipo (por exemplo, 'emu-notices-danger')
-    noticeDiv.classList.add('emu-notices', type);
+    noticeDiv.classList.add('emu-notices', cssClass);
     
     // Definir o conteúdo da mensagem
     noticeDiv.textContent = message;
@@ -36,7 +40,6 @@ function efbReturnResponse(message = null, type = null, clearNotices = false) {
         noticesElement.style.display = 'block';
     }
 }
-
 function efbTryLogin(formValues){
 
     fetch(apiData.url + 'login', {
@@ -56,19 +59,16 @@ function efbTryLogin(formValues){
         // }, 3000);
         }
         if (data.error) {
-            efbReturnResponse(data.error, 'emu-notices-danger', true)
+            efbReturnResponse(data.error, 'emu-notices-danger')
         }
     })
     .catch(error => {
-        efbReturnResponse(`erro ${error}`, 'danger', true);
+        efbReturnResponse(`Algo deu errado, entre em contato com nosso suporte! Detalhes do erro: ${error}`, 'emu-notices-danger');
     });
 
 }
-
 // REGISTER
 function efbTryRegister(formValues){
-
-    console.log(formValues)
 
     fetch(apiData.url + 'register', {
         method: 'POST',
@@ -93,27 +93,23 @@ function efbTryRegister(formValues){
 
             document.querySelector('#efb-notices').innerHTML = '';
 
-            // Se data.errors for um objeto com múltiplos erros (com chaves)
+            // se existirem vários erros
             if (typeof data.errors === 'object' && !Array.isArray(data.errors)) {
                 Object.keys(data.errors).forEach(key => {
                     const errorMessage = `${key}: ${data.errors[key]}`;
-                    efbReturnResponse(errorMessage, 'emu-notices-danger');
+                    efbReturnResponse(errorMessage, 'emu-notices-danger', false);
                 });
-            } 
-
-            // Se data.errors for um erro único (string)
-            else if (typeof data.errors === 'string') {
-                efbReturnResponse(data.errors, 'emu-notices-danger');
+            }else if (typeof data.errors === 'string') {
+                efbReturnResponse(data.errors, 'emu-notices-danger', false);
             } 
         }
         
     })
     .catch(error => {
-        efbReturnResponse(`erro ${error}`, 'danger', true);
+        efbReturnResponse(`erro ${error}`, 'danger');
     });
 
 }
-
 // Reset Password
 function efbTryResetPassword(formValues){
 
@@ -129,18 +125,17 @@ function efbTryResetPassword(formValues){
     .then(data => {
         console.log(data)
         if (data.ok) {
-            efbReturnResponse('E-mail de verificação enviado.', 'emu-notices', true)
+            efbReturnResponse('E-mail de verificação enviado.', 'emu-notices')
         }
         if (data.errors) {
-            efbReturnResponse(data.errors, 'emu-notices-danger', true)
+            efbReturnResponse(data.errors, 'emu-notices-danger')
         }
     })
     .catch(error => {
-        efbReturnResponse(`erro ${error}`, 'danger', true);
+        efbReturnResponse(`erro ${error}`, 'danger');
     });
 
 }
-
 // Change Password
 function efbTryChangePassword(formValues){
 
@@ -156,25 +151,27 @@ function efbTryChangePassword(formValues){
     .then(data => {
         console.log(data)
         if (data.ok) {
-            efbReturnResponse('Senha alterada! Redirecionando...', 'emu-notices-success', true)
+            efbReturnResponse('Senha alterada! Redirecionando...', 'emu-notices-success')
         }
         if (data.errors) {
-            efbReturnResponse(data.errors, 'emu-notices-danger', true)
+            efbReturnResponse(data.errors, 'emu-notices-danger')
         }
     })
     .catch(error => {
-        efbReturnResponse(`erro ${error}`, 'danger', true);
+        efbReturnResponse(`erro ${error}`, 'danger');
     });
 
 }
 
 // ACTIONS
+
 // Adiciona event listeners nos formularios, enviando os campos para o backend
 if (efbLoginForm){
-
 efbLoginForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
+
+    if ( ! recaptchaVerify(e.id) ) return recaptchaVerify(e.id);
 
     const formData = new FormData(efbLoginForm);
 
@@ -183,14 +180,14 @@ efbLoginForm.addEventListener('submit', (e) =>{
     efbTryLogin(formValues)
 
 })
-
 }
-
 if (efbRegisterForm){
 
 efbRegisterForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
+
+    if ( ! recaptchaVerify(e.id) ) return recaptchaVerify(e.id);
 
     const formData = new FormData(efbRegisterForm);
 
@@ -201,7 +198,6 @@ efbRegisterForm.addEventListener('submit', (e) =>{
 })
 
 }
-
 if (efbResetPasswordForm){
     
 efbResetPasswordForm.addEventListener('submit', (e) =>{
