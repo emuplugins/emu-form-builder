@@ -1,22 +1,21 @@
 // capturando os formulários
-
 const efbLoginForm = document.getElementById('efb-login-form');
 const efbRegisterForm = document.getElementById('efb-register-form');
 const efbSendPasswordEmailForm = document.getElementById('efb-send-password-email-form');
 const efbResetPasswordForm = document.getElementById('efb-reset-password-form');
 const efbConfirmCodeForm = document.getElementById('efb-confirm-code');
 
-// Capturando os inputs
+// capturando alguns inputs
 const efbConfirmCodeInput = document.getElementById('efb-confirm-code-input');
 const efbResetKeyInput = document.getElementById('efb-reset-key-input');
 
-var loginRecaptchaWidget = efbLoginForm.querySelector('.g-recaptcha-element');
-var RegisterRecaptchaWidget = efbRegisterForm.querySelector('.g-recaptcha-element');
-var SendPasswordRecaptchaWidget = efbSendPasswordEmailForm.querySelector('.g-recaptcha-element');
-
-
-
+// definindo os recaptcha Widgets
 grecaptcha.ready(function() {
+
+    var loginRecaptchaWidget = efbLoginForm.querySelector('.g-recaptcha-element');
+    var RegisterRecaptchaWidget = efbRegisterForm.querySelector('.g-recaptcha-element');
+    var SendPasswordRecaptchaWidget = efbSendPasswordEmailForm.querySelector('.g-recaptcha-element');
+
     loginRecaptchaWidget = grecaptcha.render(loginRecaptchaWidget,{
         'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
     });
@@ -26,11 +25,76 @@ grecaptcha.ready(function() {
     SendPasswordRecaptchaWidget = grecaptcha.render(SendPasswordRecaptchaWidget,{
         'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
     });
+
 });
 
 // FUNCTIONS
 
-// essa função verifica o código no endpoint
+// mostra as mensagens
+function efbReturnResponse(message = null, cssClass = null, clearNotices = true) {
+    const noticesElement = document.querySelector('#efb-notices');
+
+    if(clearNotices){
+        document.querySelector('#efb-notices').innerHTML = '';
+    }
+    
+    // Criar uma nova div para a mensagem de erro
+    const noticeDiv = document.createElement('div');
+    
+    // Adicionar a classe 'emu-notice' e a classe do tipo (por exemplo, 'emu-notices-danger')
+    noticeDiv.classList.add('emu-notices', cssClass);
+    
+    // Definir o conteúdo da mensagem
+    noticeDiv.textContent = message;
+    
+    // Adicionar a nova div dentro de #efb-notices
+    noticesElement.appendChild(noticeDiv);
+    
+    // Verificar se o container de erros está oculto e alternar a exibição
+    if (noticesElement.style.display === 'none') {
+        noticesElement.style.display = 'block';
+    }
+}
+// verifica se o recaptcha está vazio, a validação do código é feita no backend pela classe auth no php
+function recaptchaVerify(widgetId) {
+
+    // Verifica a resposta do reCAPTCHA
+    if (grecaptcha.getResponse(widgetId) === "") {
+        // Se a resposta for vazia, exibe a mensagem de erro
+        efbReturnResponse('Confirme que você não é um robô.', 'emu-notices-danger');
+        return false;
+    }
+
+    // Se tudo estiver correto, retorna true
+    return true;
+}
+// verifica a força do password com base nos valores, caso esteja vazio retorna também
+function verifyPassword(password, confirm) {
+    // Verifica se os campos de senha e confirmação não estão vazios
+    if (password === '' || confirm === '') {
+        efbReturnResponse('Campos de senha vazios', 'emu-notices-danger');
+        return false;
+    }
+
+    // Verifica se a senha tem pelo menos 8 caracteres, incluindo letras e números
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+        efbReturnResponse('A senha deve ter pelo menos 8 caracteres, incluindo letras e números.', 'emu-notices-danger');
+        return false;
+    }
+
+    if (password !== confirm) {
+        efbReturnResponse('As senhas não são iguais.', 'emu-notices-danger');
+        return false;
+    }
+
+    return true;
+}
+
+
+// FETCHS
+// verifica se o código é válido
 function verifyResetCode(formValues){
     fetch(apiData.url + 'confirm-code', {
         method: 'POST',
@@ -59,45 +123,7 @@ function verifyResetCode(formValues){
         efbReturnResponse(`erro 4${error}`, 'emu-notices-danger');
     });
 }
-
-function recaptchaVerify(widgetId) {
-
-    // Verifica a resposta do reCAPTCHA
-    if (grecaptcha.getResponse(widgetId) === "") {
-        // Se a resposta for vazia, exibe a mensagem de erro
-        efbReturnResponse('Confirme que você não é um robô.', 'emu-notices-danger');
-        return false;
-    }
-
-    // Se tudo estiver correto, retorna true
-    return true;
-}
-
-// NOTICES
-function efbReturnResponse(message = null, cssClass = null, clearNotices = true) {
-    const noticesElement = document.querySelector('#efb-notices');
-
-    if(clearNotices){
-        document.querySelector('#efb-notices').innerHTML = '';
-    }
-    
-    // Criar uma nova div para a mensagem de erro
-    const noticeDiv = document.createElement('div');
-    
-    // Adicionar a classe 'emu-notice' e a classe do tipo (por exemplo, 'emu-notices-danger')
-    noticeDiv.classList.add('emu-notices', cssClass);
-    
-    // Definir o conteúdo da mensagem
-    noticeDiv.textContent = message;
-    
-    // Adicionar a nova div dentro de #efb-notices
-    noticesElement.appendChild(noticeDiv);
-    
-    // Verificar se o container de erros está oculto e alternar a exibição
-    if (noticesElement.style.display === 'none') {
-        noticesElement.style.display = 'block';
-    }
-}
+// tenta fazer o login
 function efbTryLogin(formValues){
 
     fetch(apiData.url + 'login', {
@@ -126,7 +152,7 @@ function efbTryLogin(formValues){
     });
 
 }
-// REGISTER
+// tenta criar conta
 function efbTryRegister(formValues){
 
     fetch(apiData.url + 'register', {
@@ -169,7 +195,7 @@ function efbTryRegister(formValues){
     });
 
 }
-// Reset Password
+// tenta enviar o email de redefinição de senha
 function efbSendPasswordEmail(formValues){
 
     fetch(apiData.url + 'send-password-code', {
@@ -193,7 +219,7 @@ function efbSendPasswordEmail(formValues){
         }
     })
 }
-// Change Password
+// tenta mudar a senha
 function efbTryChangePassword(formValues){
 
     fetch(apiData.url + 'reset-password', {
@@ -311,21 +337,4 @@ efbConfirmCodeInput.addEventListener('input', (e)=>{
     efbResetKeyInput.value = e.target.value;
 })
 
-}
-// VALUE
-function verifyPassword(password, confirm) {
-    // Verifica se a senha tem pelo menos 8 caracteres, incluindo letras e números
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-    if (!passwordRegex.test(password)) {
-        efbReturnResponse('A senha deve ter pelo menos 8 caracteres, incluindo letras e números.', 'emu-notices-danger');
-        return false;
-    }
-
-    if (password !== confirm) {
-        efbReturnResponse('As senhas não são iguais.', 'emu-notices-danger');
-        return false;
-    }
-    
-    return true;
 }
