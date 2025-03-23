@@ -1,6 +1,7 @@
 <?php
 
-if ( ! defined('ABSPATH')) exit;
+// acho que não precisa verificar por que é um endpoint de rest api do wp, mas deixa assim
+if ( ! defined('ABSPATH')) return;
 
 //  =================================
 //  ENDPOINT PARA REALIZAR O LOIGN

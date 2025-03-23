@@ -1,5 +1,8 @@
 <?php
 
+// acho que não precisa verificar por que é um endpoint de rest api do wp, mas deixa assim
+if ( ! defined('ABSPATH')) return;
+
 //  =================================
 //  ENDPOINT PARA CRIAR O USUÁRIO
 // ==================================

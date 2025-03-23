@@ -5,6 +5,7 @@ const efbRegisterForm = document.getElementById('efb-register-form');
 const efbSendPasswordEmailForm = document.getElementById('efb-send-password-email-form');
 const efbResetPasswordForm = document.getElementById('efb-reset-password-form');
 const efbConfirmCodeForm = document.getElementById('efb-confirm-code');
+
 // Capturando os inputs
 const efbConfirmCodeInput = document.getElementById('efb-confirm-code-input');
 const efbResetKeyInput = document.getElementById('efb-reset-key-input');
@@ -55,7 +56,7 @@ function verifyResetCode(formValues){
         }
     })
     .catch(error => {
-        efbReturnResponse(`erro 4${error}`, 'emu-notices-dangerdanger');
+        efbReturnResponse(`erro 4${error}`, 'emu-notices-danger');
     });
 }
 
@@ -181,7 +182,6 @@ function efbSendPasswordEmail(formValues){
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data)
         if (data.ok) {
             efbReturnResponse('E-mail de verificação enviado.', 'emu-notices')
             efbConfirmCodeForm.style.display = efbConfirmCodeForm.style.display === 'none' ? 'flex' : 'none'; 
@@ -243,8 +243,13 @@ efbRegisterForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
 
+    registerPasswordInput = efbRegisterForm.querySelector('#register-password');
+    registerPasswordConfirmInput = efbRegisterForm.querySelector('#register-password-confirm');
+
+    if ( ! verifyPassword(registerPasswordInput.value, registerPasswordConfirmInput.value)) return false;
+
     if ( ! recaptchaVerify(RegisterRecaptchaWidget) ) return false;
-    
+
     const formData = new FormData(efbRegisterForm);
     
     const formValues = Object.fromEntries(formData.entries());
@@ -275,6 +280,11 @@ efbResetPasswordForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
 
+    newPasswordInput = efbResetPasswordForm.querySelector('#new-password');
+    newPasswordConfirmInput = efbResetPasswordForm.querySelector('#confirm-new-password');
+
+    if ( ! verifyPassword(newPasswordInput.value, newPasswordConfirmInput.value)) return false;
+
     const formData = new FormData(efbResetPasswordForm);
 
     const formValues = Object.fromEntries(formData.entries());
@@ -301,4 +311,21 @@ efbConfirmCodeInput.addEventListener('input', (e)=>{
     efbResetKeyInput.value = e.target.value;
 })
 
+}
+// VALUE
+function verifyPassword(password, confirm) {
+    // Verifica se a senha tem pelo menos 8 caracteres, incluindo letras e números
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+        efbReturnResponse('A senha deve ter pelo menos 8 caracteres, incluindo letras e números.', 'emu-notices-danger');
+        return false;
+    }
+
+    if (password !== confirm) {
+        efbReturnResponse('As senhas não são iguais.', 'emu-notices-danger');
+        return false;
+    }
+    
+    return true;
 }
