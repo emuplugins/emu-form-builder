@@ -184,17 +184,51 @@ function efb_login_register(){
 
             <form class="efb-form" id="efb-reset-password-form">
 
+                <h2>Insira seu e-mail</h2>
+
+                <input type="hidden" value="<?php echo esc_url(home_url( parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) )); ?>" name="formUrl">
+
                 <div class="efb-form-group">    
                     <label for="">E-mail</label>
                     <input type="text" name="email">
                 </div>
-                
-                <input type="hidden" value="<?php echo esc_url(home_url( parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) )); ?>" name="formUrl">
 
                 <div class="g-recaptcha" data-sitekey="<?php echo $gSiteKey ?>"></div>
 
                 <div class="efb-form-group">
                     <button class="emu-btn emu-btn-primary">Enviar e-mail</button>
+                </div>
+
+            </form>
+
+            <form class="efb-form" id="efb-confirm-code">
+
+                <h2>Confirme seu código</h2>
+
+                <div class="efb-form-group">    
+                    <label for="">Insira o código aqui</label>
+                    <input type="number" name="confirmCode">
+                </div>
+
+            </form>
+            
+            <form class="efb-form" id="efb-reset-password">
+
+                <h2>Redefinir senha</h2>
+
+                <input type="hidden" id="response-hash">
+
+                <div class="efb-form-group">    
+                    <label for="">Senha</label>
+                    <input type="password" name="password">
+                </div>
+                <div class="efb-form-group">    
+                    <label for="">Confirme a senha</label>
+                    <input type="password" name="confirmpassword">
+                </div>
+
+                <div class="efb-form-group">
+                    <button class="emu-btn emu-btn-primary">Redefinir senha</button>
                 </div>
 
             </form>

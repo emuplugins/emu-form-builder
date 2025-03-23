@@ -30,14 +30,14 @@ function efbResetPassword(WP_REST_Request $request) {
     if($email){
 
         $user_data = get_user_by( 'email', $email );
-        $reset_key = wp_generate_password( 20, false );
+        $reset_key = str_pad(rand(10000, 99999), 5, '0', STR_PAD_LEFT); // Gerando número aleatório de 5 dígitos
 
         if (!$user_data) {
             return new WP_REST_Response(['errors' => 'email not found'], 200);
         }
 
         update_user_meta( $user_data->ID, 'reset_password_key', $reset_key );
-        update_user_meta( $user_data->ID, 'reset_password_expiration', time() + 450 ); // 7.30 minutos
+        update_user_meta( $user_data->ID, 'reset_password_expiration', time() + 1800 ); // 30 minutos
 
         $reset_link = ($formUrl . "?efb=rp&key=$reset_key&id=" . $user_data->ID );
         
@@ -58,7 +58,7 @@ function efbResetPassword(WP_REST_Request $request) {
         delete_user_meta( $user_id, 'reset_password_expiration' );
         return new WP_REST_Response(['ok' => 1], 200);
 
-    }else {
+    } else {
         delete_user_meta( $user_id, 'reset_password_key' );
         delete_user_meta( $user_id, 'reset_password_expiration' );
         return new WP_REST_Response(['errors' => 'reset_key invalid'], 200);
