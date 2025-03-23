@@ -92,8 +92,8 @@ function verifyPassword(password, confirm) {
     return true;
 }
 
-
 // FETCHS
+
 // verifica se o código é válido
 function verifyResetCode(formValues){
     fetch(apiData.url + 'confirm-code', {
