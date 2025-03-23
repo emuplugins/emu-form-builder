@@ -14,19 +14,37 @@ add_action('rest_api_init', function() {
 
 });
 
+function findUserBykey($reset_key) {
+    // Procurar usuários pelo código de confirmação (reset_password_key)
+    $users = get_users([
+        'meta_key' => 'reset_password_key', // Chave do meta dado
+        'meta_value' => $reset_key,         // Valor do código que você está procurando
+        'number' => 1,                      // Limitar a busca para um único usuário (você pode alterar conforme necessário)
+        'fields' => ['ID', 'user_login', 'user_email'], // Campos a serem retornados
+    ]);
+
+    if (!empty($users)) {
+        // Se encontrado, retorna o primeiro usuário encontrado
+        return $users[0];
+    } else {
+        // Caso contrário, retorna false ou um erro
+        return false;
+    }
+}
+
 function efbResetPassword(WP_REST_Request $request) {
 
     $email = sanitize_email($request->get_param('email')) ?? '';
-    $formUrl = esc_url_raw($request->get_param('formUrl')) ?? '';
     $reset_key = wp_slash($request->get_param('resetKey')) ?? '';
-    $user_id = sanitize_text_field($request->get_param('userId')) ?? '';
     $password = wp_slash($request->get_param('password')) ?? '';
+    $user_id = findUserBykey($reset_key);
 
+    // não é possivel enviar o e-mail e ao mesmo tempo não enviar o reset_key. Se quiser enviar o e-mail, é obrigatório o reset_key
     if(!$email && !$reset_key){
         return new WP_REST_Response(['errors' => 'invalid email'], 200);
     }
 
-    // send mail
+    // Caso tenham sido enviados, trata do envio do código, mas não faz os outros métodos abaixo desse
     if($email){
 
         $user_data = get_user_by( 'email', $email );
@@ -39,13 +57,12 @@ function efbResetPassword(WP_REST_Request $request) {
         update_user_meta( $user_data->ID, 'reset_password_key', $reset_key );
         update_user_meta( $user_data->ID, 'reset_password_expiration', time() + 1800 ); // 30 minutos
 
-        $reset_link = ($formUrl . "?efb=rp&key=$reset_key&id=" . $user_data->ID );
         
-        wp_mail( $user_data->user_email, 'Redefinição de senha', 'Clique no link para redefinir sua senha: ' . $reset_link );
+        wp_mail( $user_data->user_email, 'Redefinição de senha', 'Cole este código no site:' . $reset_key );
         return new WP_REST_Response(['ok' => 1], 200);
     }
 
-    // reset password
+    // Começa a redefinir a senha, caso não tenha sido enviado o e-mail
     $stored_key = get_user_meta( $user_id, 'reset_password_key', true );
     $expiration = get_user_meta( $user_id, 'reset_password_expiration', true );
 
