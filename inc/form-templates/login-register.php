@@ -42,62 +42,6 @@ function efb_login_register(){
 
     $gSiteKey = '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7';
 
-    // Caso estivermos tentando recuperar a senha... 
-    if ( isset( $_GET['efb'] ) && $_GET['efb'] === 'rp' ) {
-
-        $user_id = $_GET['id'];
-        $reset_key = $_GET['key'] ?? null;
-
-        $stored_key = get_user_meta( $user_id, 'reset_password_key', true );
-        $expiration = get_user_meta( $user_id, 'reset_password_expiration', true );
-
-        if (!$reset_key) return 'Invalid key or user.';
-
-        // depois das verificações, conferimos se o token já expirou ou não
-        if ( $stored_key === $reset_key && time() < $expiration ) {
-            ?>
-            
-            <div class="efb-multistep">
-
-            <div style="display:none;" id="efb-notices"></div>
-
-                <div class="step" step="1">
-
-                    <form class="efb-form" method="POST" action="" id="efb-change-password-form">
-
-                        <input type="hidden" name="userId" value="<?php echo $_GET['id'] ?? '' ?>">
-                        <input type="hidden" name="resetKey" value="<?php echo $_GET['key'] ?? '' ?>">
-
-                        <div class="efb-form-group">    
-                            <label for="">Senha</label>
-                            <input type="text" name="password">
-                        </div>
-
-                        <div class="efb-form-group">    
-                            <label for="">Repita a senha</label>
-                            <input type="text" name="passwordConfirm">
-                        </div>
-
-                        <div class="efb-form-group">
-                            <button class="emu-btn emu-btn-primary">Alterar senha</button>
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-        <?php
-        }
-
-        
-    efbLoginScript();
-
-        // fim do form de redefinir senha
-        return;
-            
-    }
-
     ?>
 
     <div class="efb-multistep">
@@ -114,7 +58,7 @@ function efb_login_register(){
         
         <div class="step" step="1">
 
-            <form class="efb-form" method="POST" action="" id="efb-login-form" onsubmit="return validarPost()">
+            <form class="efb-form" method="POST" action="" id="efb-login-form" >
 
                 <div class="efb-form-group">    
                     <label for="">Nome de usuário</label>
@@ -217,6 +161,7 @@ function efb_login_register(){
                 <h2>Redefinir senha</h2>
 
                 <input type="hidden" id="response-hash">
+                <input type="hidden" name="resetKey" value="">
 
                 <div class="efb-form-group">    
                     <label for="">Senha</label>

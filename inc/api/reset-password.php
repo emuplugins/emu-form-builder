@@ -14,6 +14,26 @@ add_action('rest_api_init', function() {
 
 });
 
+function efbGetUserIp() {
+
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        // Cloudflare
+        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        // Proxy transparente
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // Proxy ou balanceador de carga
+        $ip_list = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $ip = trim($ip_list[0]); // Primeiro IP da lista
+    } else {
+        // IP direto do usuário
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : 'IP inválido';
+}
+
 function findUserBykey($reset_key) {
     // Procurar usuários pelo código de confirmação (reset_password_key)
     $users = get_users([
@@ -34,51 +54,72 @@ function findUserBykey($reset_key) {
 
 function efbResetPassword(WP_REST_Request $request) {
 
+    $user_ip = efbGetUserIp();
     $email = sanitize_email($request->get_param('email')) ?? '';
     $reset_key = wp_slash($request->get_param('resetKey')) ?? '';
     $password = wp_slash($request->get_param('password')) ?? '';
     $user_id = findUserBykey($reset_key);
+    $user_id = $user_id ? $user_id->ID : null;
 
-    // não é possivel enviar o e-mail e ao mesmo tempo não enviar o reset_key. Se quiser enviar o e-mail, é obrigatório o reset_key
-    if(!$email && !$reset_key){
-        return new WP_REST_Response(['errors' => 'invalid email'], 200);
+    // Validar se os parâmetros básicos foram enviados
+    if (!$email && !$reset_key) {
+        return new WP_REST_Response(['errors' => 'Invalid email'], 200);
     }
 
-    // Caso tenham sido enviados, trata do envio do código, mas não faz os outros métodos abaixo desse
-    if($email){
-
-        $user_data = get_user_by( 'email', $email );
-        $reset_key = str_pad(rand(10000, 99999), 5, '0', STR_PAD_LEFT); // Gerando número aleatório de 5 dígitos
+    // Caso o usuário esteja solicitando um código
+    if ($email) {
+        $user_data = get_user_by('email', $email);
 
         if (!$user_data) {
-            return new WP_REST_Response(['errors' => 'email not found'], 200);
+            return new WP_REST_Response(['errors' => 'Email not found'], 200);
         }
 
-        update_user_meta( $user_data->ID, 'reset_password_key', $reset_key );
-        update_user_meta( $user_data->ID, 'reset_password_expiration', time() + 1800 ); // 30 minutos
+        // Verificar tentativas de envio
+        $reset_attempts = get_user_meta($user_data->ID, 'reset_attempts', true) ?: 0;
+        $last_reset_time = get_user_meta($user_data->ID, 'last_reset_attempt_time', true);
 
-        
-        wp_mail( $user_data->user_email, 'Redefinição de senha', 'Cole este código no site:' . $reset_key );
+        if ($reset_attempts >= 3 && (time() - $last_reset_time) < 900) { // 900 segundos = 15 minutos
+            return new WP_REST_Response(['errors' => 'Too many reset attempts. Try again in 15 minutes.'], 429);
+        }
+
+        // Resetar contador após 15 minutos
+        if ((time() - $last_reset_time) >= 900) {
+            update_user_meta($user_data->ID, 'reset_attempts', 0);
+        }
+
+        // Gerar código de redefinição
+        $reset_key = str_pad(rand(10000, 99999), 5, '0', STR_PAD_LEFT);
+
+        update_user_meta($user_data->ID, 'reset_password_key', $reset_key);
+        update_user_meta($user_data->ID, 'reset_password_expiration', time() + 1800); // 30 minutos
+
+        // Atualizar contador de tentativas
+        update_user_meta($user_data->ID, 'reset_attempts', $reset_attempts + 1);
+        update_user_meta($user_data->ID, 'last_reset_attempt_time', time());
+
+        wp_mail($user_data->user_email, 'Redefinição de senha', 'Cole este código no site: ' . $reset_key);
         return new WP_REST_Response(['ok' => 1], 200);
     }
 
-    // Começa a redefinir a senha, caso não tenha sido enviado o e-mail
-    $stored_key = get_user_meta( $user_id, 'reset_password_key', true );
-    $expiration = get_user_meta( $user_id, 'reset_password_expiration', true );
+    if (!$reset_key){
+        return new WP_REST_Response(['errors' => 'Código de redefinição inválido.'], 200);
+    }
 
-    // se a senha estiver correta, e não tiver expirado o tempo retorna ok, do contrário retorna erro
-    if ( $stored_key === $reset_key && time() < $expiration ) {
+    // Verificar se o código é válido
+    $stored_key = get_user_meta($user_id, 'reset_password_key', true);
+    $expiration = get_user_meta($user_id, 'reset_password_expiration', true);
 
-        wp_set_password( $password, $user_id );
+    if ($stored_key === $reset_key && time() < $expiration) {
+        if (strlen($password) < 8) {
+            return new WP_REST_Response(['errors' => 'Senha fraca, insira pelo menos 8 letras ou números.'], 400);
+        }
 
-        delete_user_meta( $user_id, 'reset_password_key' );
-        delete_user_meta( $user_id, 'reset_password_expiration' );
+        wp_set_password($password, $user_id);
+
+        delete_user_meta($user_id, 'reset_password_key');
+        delete_user_meta($user_id, 'reset_password_expiration');
         return new WP_REST_Response(['ok' => 1], 200);
-
     } else {
-        delete_user_meta( $user_id, 'reset_password_key' );
-        delete_user_meta( $user_id, 'reset_password_expiration' );
-        return new WP_REST_Response(['errors' => 'reset_key invalid'], 200);
+        return new WP_REST_Response(['errors' => 'Reset key invalid'], 200);
     }
-
 }
