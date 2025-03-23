@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined('ABSPATH')) exit;
+
 //  =================================
 //  ENDPOINT PARA REALIZAR O LOIGN
 // ==================================
@@ -16,15 +18,21 @@ add_action('rest_api_init', function() {
 
 function efbLogin(WP_REST_Request $request) {
     
+    // limpando os dados...
     $username = sanitize_text_field($request->get_param('username'));
     $password = wp_slash($request->get_param('password'));
+ 
+    // verificando se o login está correto
 
     $user = wp_authenticate($username, $password);	
 
     if (is_wp_error($user)) {
         return new WP_REST_Response(['error' => 'login incorrect'], 200);
     }
-	// Após todas as verificações, já que o login deu certo definimos o cookie.
+
+	// definindo o cookie que autentica o usuário
+    // por incrivel que pareça, isso funciona com fetch! 😱
+
 	wp_set_auth_cookie($user->ID, true);
 
 	$user_info = get_userdata($user->id);

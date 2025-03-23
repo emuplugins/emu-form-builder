@@ -1,9 +1,4 @@
-// ===============================================
-// Apenas se comunica com o
-// endpoint emu_plugins/v1/login/ da rest api do wordpress.
-// ===============================================
-
-const siteKey = '6LdvVfoqAAAAAIUxyeWpcnjDAlQbV7Lcu6rH4AQt';
+// const siteKey = '6LdvVfoqAAAAAIUxyeWpcnjDAlQbV7Lcu6rH4AQt';
 
 const efbLoginForm = document.getElementById('efb-login-form')
 const efbRegisterForm = document.getElementById('efb-register-form')
@@ -12,7 +7,35 @@ const efbChangePasswordForm = document.getElementById('efb-change-password-form'
 
 // FUNCTIONS
 
-// LOGIN
+function validarRecaptcha(){
+    return false;
+}
+
+// NOTICES
+function efbReturnResponse(message = null, type = null, clearNotices = false) {
+    const noticesElement = document.querySelector('#efb-notices');
+
+    if(clearNotices){
+        document.querySelector('#efb-notices').innerHTML = '';
+    }
+    
+    // Criar uma nova div para a mensagem de erro
+    const noticeDiv = document.createElement('div');
+    
+    // Adicionar a classe 'emu-notice' e a classe do tipo (por exemplo, 'emu-notices-danger')
+    noticeDiv.classList.add('emu-notices', type);
+    
+    // Definir o conteúdo da mensagem
+    noticeDiv.textContent = message;
+    
+    // Adicionar a nova div dentro de #efb-notices
+    noticesElement.appendChild(noticeDiv);
+    
+    // Verificar se o container de erros está oculto e alternar a exibição
+    if (noticesElement.style.display === 'none') {
+        noticesElement.style.display = 'block';
+    }
+}
 
 function efbTryLogin(formValues){
 
@@ -43,7 +66,6 @@ function efbTryLogin(formValues){
 }
 
 // REGISTER
-
 function efbTryRegister(formValues){
 
     console.log(formValues)
@@ -93,7 +115,6 @@ function efbTryRegister(formValues){
 }
 
 // Reset Password
-
 function efbTryResetPassword(formValues){
 
     fetch(apiData.url + 'reset-password', {
@@ -121,7 +142,6 @@ function efbTryResetPassword(formValues){
 }
 
 // Change Password
-
 function efbTryChangePassword(formValues){
 
     fetch(apiData.url + 'reset-password', {
@@ -148,54 +168,26 @@ function efbTryChangePassword(formValues){
 
 }
 
-// NOTICES
-
-function efbReturnResponse(message = null, type = null, clearNotices = false) {
-    const noticesElement = document.querySelector('#efb-notices');
-
-    if(clearNotices){
-        document.querySelector('#efb-notices').innerHTML = '';
-    }
-    
-    // Criar uma nova div para a mensagem de erro
-    const noticeDiv = document.createElement('div');
-    
-    // Adicionar a classe 'emu-notice' e a classe do tipo (por exemplo, 'emu-notices-danger')
-    noticeDiv.classList.add('emu-notices', type);
-    
-    // Definir o conteúdo da mensagem
-    noticeDiv.textContent = message;
-    
-    // Adicionar a nova div dentro de #efb-notices
-    noticesElement.appendChild(noticeDiv);
-    
-    // Verificar se o container de erros está oculto e alternar a exibição
-    if (noticesElement.style.display === 'none') {
-        noticesElement.style.display = 'block';
-    }
-}
-
 // ACTIONS
+// Adiciona event listeners nos formularios, enviando os campos para o backend
 if (efbLoginForm){
 
-    makeRecaptcha(efbLoginForm.id, siteKey)
-    efbLoginForm.addEventListener('submit', (e) =>{
-    
-        e.preventDefault()
+efbLoginForm.addEventListener('submit', (e) =>{
 
-        const formData = new FormData(efbLoginForm);
-    
-        const formValues = Object.fromEntries(formData.entries());
+    e.preventDefault()
 
-        verifyRecaptchaScore(formValues)
+    const formData = new FormData(efbLoginForm);
 
-        efbTryLogin(formValues)
-    
-    })
+    const formValues = Object.fromEntries(formData.entries());
+
+    efbTryLogin(formValues)
+
+})
 
 }
 
 if (efbRegisterForm){
+
 efbRegisterForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
@@ -207,9 +199,11 @@ efbRegisterForm.addEventListener('submit', (e) =>{
     efbTryRegister(formValues)
 
 })
+
 }
 
 if (efbResetPasswordForm){
+    
 efbResetPasswordForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
@@ -221,66 +215,19 @@ efbResetPasswordForm.addEventListener('submit', (e) =>{
     efbTryResetPassword(formValues)
 
 })
-}
 
+}
 if (efbChangePasswordForm){
 
-    efbChangePasswordForm.addEventListener('submit', (e) =>{
-    
-        e.preventDefault()
-    
-        const formData = new FormData(efbChangePasswordForm);
-    
-        const formValues = Object.fromEntries(formData.entries());
-    
-        efbTryChangePassword(formValues)
-    
-    })
-}
+efbChangePasswordForm.addEventListener('submit', (e) =>{
 
+    e.preventDefault()
 
-function makeRecaptcha(formId, siteKey) {
-    
-    grecaptcha.ready(function() {
+    const formData = new FormData(efbChangePasswordForm);
 
-        grecaptcha.execute(siteKey, { action: 'login' }).then(function(recaptchaToken) {
+    const formValues = Object.fromEntries(formData.entries());
 
-            // Adiciona o token gerado ao formulário
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'recaptcha_token';
-            input.value = recaptchaToken;  // Use um nome diferente para o token retornado
-            document.getElementById(formId).appendChild(input);
-    
-        });
+    efbTryChangePassword(formValues)
 
-    })
-}
-
-
-function verifyRecaptchaScore(token){
-    
-    fetch(apiData.url + 'recaptcha-verify', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-WP-Nonce': apiData.nonce,
-        },
-        body: JSON.stringify(token)
-    })
-    .then(response => response.json())
-    .then(data => {
-
-        console.log(data)
-        
-        if (data.ok) {
-            console.log('ok')
-        }
-        if (data.error) {
-            console.log(data.error)
-        }
-    })
-    .catch(error => {
-        console.log('error')
-    });
+})
 }

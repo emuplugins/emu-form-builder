@@ -1,7 +1,10 @@
 <?php
 
+if ( ! defined('ABSPATH') ) exit;
+
 // Functions
 
+// post type
 function efb_post_type(){
     $labels = [
         'name'               => __('Forms', 'emu-form-builder'),
@@ -34,7 +37,9 @@ function efb_post_type(){
 
     register_post_type('emu_form_builder', $args);
 };
+add_action('init', 'efb_post_type');
 
+// metabox
 function efb_metabox($post) {
     // Verifica se está no Post Type correto
     if ($post->post_type !== 'emu_form_builder') {
@@ -64,7 +69,9 @@ function efb_metabox($post) {
 
     </div>';
 }
+add_action('edit_form_after_title', 'efb_metabox');
 
+// shortcode
 function efb_shortcode($atts){
     $atts = shortcode_atts(array(
         'id' => NULL
@@ -74,10 +81,4 @@ function efb_shortcode($atts){
     
     return efb_login_register();
 }
-
-// Actions
 add_shortcode('emu_form_builder', 'efb_shortcode');
-
-add_action('init', 'efb_post_type');
-
-add_action('edit_form_after_title', 'efb_metabox');
