@@ -9,12 +9,12 @@ const efbConfirmCodeForm = document.getElementById('efb-confirm-code');
 const efbConfirmCodeInput = document.getElementById('efb-confirm-code-input');
 const efbResetKeyInput = document.getElementById('efb-reset-key-input');
 
+var loginRecaptchaWidget = efbLoginForm.querySelector('.g-recaptcha-element');
+var RegisterRecaptchaWidget = efbRegisterForm.querySelector('.g-recaptcha-element');
+var SendPasswordRecaptchaWidget = efbSendPasswordEmailForm.querySelector('.g-recaptcha-element');
+
 // definindo os recaptcha Widgets
 grecaptcha.ready(function() {
-
-    var loginRecaptchaWidget = efbLoginForm.querySelector('.g-recaptcha-element');
-    var RegisterRecaptchaWidget = efbRegisterForm.querySelector('.g-recaptcha-element');
-    var SendPasswordRecaptchaWidget = efbSendPasswordEmailForm.querySelector('.g-recaptcha-element');
 
     loginRecaptchaWidget = grecaptcha.render(loginRecaptchaWidget,{
         'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
@@ -138,9 +138,9 @@ function efbTryLogin(formValues){
     .then(data => {
         if (data.ok) {
             efbReturnResponse('Login bem sucedido. Bem-vindo de volta, ' + data.name + ' !', 'emu-notices-success', true)
-        //     setTimeout(() => {
-        //         location.reload();
-        // }, 3000);
+            setTimeout(() => {
+                location.reload();
+        }, 3000);
         }
         if (data.error) {
             grecaptcha.reset(loginRecaptchaWidget)
@@ -235,6 +235,9 @@ function efbTryChangePassword(formValues){
         console.log(data)
         if (data.ok) {
             efbReturnResponse('Senha alterada! Redirecionando...', 'emu-notices-success')
+            setTimeout(() => {
+                location.reload();
+        }, 3000);
         }
         if (data.errors) {
             efbReturnResponse(data.errors, 'emu-notices-danger')

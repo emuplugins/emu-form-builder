@@ -11,12 +11,12 @@ function efbLoginScript() {
 
     wp_enqueue_style(
         'emu-login-handler',
-        PLUGIN_URL . 'assets/css/form.css'
+        EFB_PLUGIN_URL . 'assets/css/form.css'
     );
 
     wp_enqueue_script(
         'emu-form-js',
-        PLUGIN_URL . 'assets/js/form.js',
+        EFB_PLUGIN_URL . 'assets/js/form.js',
         array(),
         null,
         true 
@@ -24,7 +24,7 @@ function efbLoginScript() {
 
     wp_enqueue_script(
         'emu-login-handler',
-        PLUGIN_URL . 'assets/js/login.js',
+        EFB_PLUGIN_URL . 'assets/js/login.js',
         array(),
         null,
         true 

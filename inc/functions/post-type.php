@@ -77,7 +77,7 @@ function efb_shortcode($atts){
         'id' => NULL
     ), $atts);
 
-    include_once PLUGIN_PATH . '/inc/form-templates/login-register.php';
+    include_once EFB_PLUGIN_PATH . '/inc/form-templates/login-register.php';
     
     return efb_login_register();
 }
