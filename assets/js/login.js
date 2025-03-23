@@ -171,7 +171,7 @@ function efbTryRegister(formValues){
 // Reset Password
 function efbSendPasswordEmail(formValues){
 
-    fetch(apiData.url + 'reset-password', {
+    fetch(apiData.url + 'send-password-code', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

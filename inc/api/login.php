@@ -27,6 +27,7 @@ function efbLogin(WP_REST_Request $request) {
     if(!$recaptchaResponse){
         return new WP_REST_Response(['error' => 'recaptcha invalid'], 200);
     }
+    
     // limpando os dados...
     $username = sanitize_text_field($request->get_param('username'));
     $password = wp_slash($request->get_param('password'));

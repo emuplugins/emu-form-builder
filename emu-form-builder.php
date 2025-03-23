@@ -21,5 +21,6 @@ require_once PLUGIN_PATH . '/inc/classes/EmuAuthenticate.php';
 require_once PLUGIN_PATH . '/inc/api/login.php';
 require_once PLUGIN_PATH . '/inc/api/register.php';
 require_once PLUGIN_PATH . '/inc/api/reset-password.php';
+require_once PLUGIN_PATH . '/inc/api/send-password-code.php';
 require_once PLUGIN_PATH . '/inc/api/confirm-code.php';
 require_once(PLUGIN_PATH . '/inc/functions/post-type.php');

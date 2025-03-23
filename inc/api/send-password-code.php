@@ -29,15 +29,8 @@ function efbSendPasswordCode(WP_REST_Request $request){
         return new WP_REST_Response(['errors' => 'Recaptcha inválido.'], 200);
     };
 
-    // caso seja enviado o e-mail, mas não seja válido
-    if($request->get_param('email') && $email == false) return new WP_REST_Response(['errors' => 'E-mail inválido'], 200);
-
-    $user_data = get_user_by('email', $email);
-
-    if (!$user_data) {
-        return new WP_REST_Response(['errors' => 'E-mail não encontrado'], 200);
-    }
-
-    $auth->sendResetKey($user_data->user_email, $user_data->ID);
+    return $auth->sendResetKey($email) 
+    ? new WP_REST_Response(['ok' => 1], 200) 
+    : new WP_REST_Response(['errors' => 'E-mail não encontrado'], 200);
 
 }
