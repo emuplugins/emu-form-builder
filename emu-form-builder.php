@@ -17,7 +17,9 @@ if (!defined('ABSPATH')) {
 define('PLUGIN_PATH', dirname(__FILE__));
 define('PLUGIN_URL', plugin_dir_url(__FILE__));
 
+require_once PLUGIN_PATH . '/inc/classes/EmuAuthenticate.php';
 require_once PLUGIN_PATH . '/inc/api/login.php';
 require_once PLUGIN_PATH . '/inc/api/register.php';
 require_once PLUGIN_PATH . '/inc/api/reset-password.php';
+require_once PLUGIN_PATH . '/inc/api/confirm-code.php';
 require_once(PLUGIN_PATH . '/inc/functions/post-type.php');

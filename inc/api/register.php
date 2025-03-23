@@ -16,6 +16,16 @@ add_action('rest_api_init', function() {
 
 function efbRegister(WP_REST_Request $request) {
 
+    $auth = new EmuAuthenticate;
+    
+    // Recaptcha
+    $recaptchaResponse = wp_slash($request->get_param('g-recaptcha-response') ?? '');
+    $recaptchaResponse = $auth->recaptchaVerify($recaptchaResponse);
+
+    if(!$recaptchaResponse){
+        return new WP_REST_Response(['error' => 'recaptcha invalid'], 200);
+    }
+
     // Recuperando os dados da requisição
     $username = sanitize_text_field($request->get_param('username'));
     $password = wp_slash($request->get_param('password'));

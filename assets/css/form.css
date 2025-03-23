@@ -86,3 +86,9 @@ h1{
     border-color:#a3e4c0
 
 }
+
+.efb-form{
+    display: flex;
+    flex-direction: column;
+    gap:10px
+}

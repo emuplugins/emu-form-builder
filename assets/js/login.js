@@ -1,17 +1,74 @@
-// const siteKey = '6LdvVfoqAAAAAIUxyeWpcnjDAlQbV7Lcu6rH4AQt';
+// capturando os formulários
 
-const efbLoginForm = document.getElementById('efb-login-form')
-const efbRegisterForm = document.getElementById('efb-register-form')
-const efbResetPasswordForm = document.getElementById('efb-reset-password-form')
-const efbChangePasswordForm = document.getElementById('efb-change-password-form')
+const efbLoginForm = document.getElementById('efb-login-form');
+const efbRegisterForm = document.getElementById('efb-register-form');
+const efbSendPasswordEmailForm = document.getElementById('efb-send-password-email-form');
+const efbResetPasswordForm = document.getElementById('efb-reset-password-form');
+const efbConfirmCodeForm = document.getElementById('efb-confirm-code');
+// Capturando os inputs
+const efbConfirmCodeInput = document.getElementById('efb-confirm-code-input');
+const efbResetKeyInput = document.getElementById('efb-reset-key-input');
+
+var loginRecaptchaWidget = efbLoginForm.querySelector('.g-recaptcha-element');
+var RegisterRecaptchaWidget = efbRegisterForm.querySelector('.g-recaptcha-element');
+var SendPasswordRecaptchaWidget = efbSendPasswordEmailForm.querySelector('.g-recaptcha-element');
+
+
+
+grecaptcha.ready(function() {
+    loginRecaptchaWidget = grecaptcha.render(loginRecaptchaWidget,{
+        'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
+    });
+    RegisterRecaptchaWidget = grecaptcha.render(RegisterRecaptchaWidget,{
+        'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
+    });
+    SendPasswordRecaptchaWidget = grecaptcha.render(SendPasswordRecaptchaWidget,{
+        'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
+    });
+});
 
 // FUNCTIONS
 
-function recaptchaVerify(id){
-    if(grecaptcha.getResponse(id) == "") {
-        efbReturnResponse('Confirme que você não é um robô.','emu-notices-danger');
+// essa função verifica o código no endpoint
+function verifyResetCode(formValues){
+    fetch(apiData.url + 'confirm-code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-WP-Nonce': apiData.nonce,
+        },
+        body: JSON.stringify({
+            resetKey: formValues,
+        })
+    })    
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            efbReturnResponse('Código de confirmação confirmado.', 'emu-notices')
+            efbConfirmCodeForm.style.display = efbConfirmCodeForm.style.display === 'none' ? 'flex' : 'none'; 
+            efbResetPasswordForm.style.display  = efbResetPasswordForm.style.display  === 'none' ? 'flex' : 'none'; 
+            console.log(data)
+        }
+        if (data.errors) {
+            console.log(data)
+            efbReturnResponse(data.errors, 'emu-notices-danger')
+        }
+    })
+    .catch(error => {
+        efbReturnResponse(`erro 4${error}`, 'emu-notices-dangerdanger');
+    });
+}
+
+function recaptchaVerify(widgetId) {
+
+    // Verifica a resposta do reCAPTCHA
+    if (grecaptcha.getResponse(widgetId) === "") {
+        // Se a resposta for vazia, exibe a mensagem de erro
+        efbReturnResponse('Confirme que você não é um robô.', 'emu-notices-danger');
         return false;
     }
+
+    // Se tudo estiver correto, retorna true
     return true;
 }
 
@@ -59,6 +116,7 @@ function efbTryLogin(formValues){
         // }, 3000);
         }
         if (data.error) {
+            grecaptcha.reset(loginRecaptchaWidget)
             efbReturnResponse(data.error, 'emu-notices-danger')
         }
     })
@@ -92,7 +150,7 @@ function efbTryRegister(formValues){
         if (data.errors) {
 
             document.querySelector('#efb-notices').innerHTML = '';
-
+            grecaptcha.reset(RegisterRecaptchaWidget)
             // se existirem vários erros
             if (typeof data.errors === 'object' && !Array.isArray(data.errors)) {
                 Object.keys(data.errors).forEach(key => {
@@ -106,12 +164,12 @@ function efbTryRegister(formValues){
         
     })
     .catch(error => {
-        efbReturnResponse(`erro ${error}`, 'danger');
+        efbReturnResponse(`erro${error}`, 'emu-notices-danger');
     });
 
 }
 // Reset Password
-function efbTryResetPassword(formValues){
+function efbSendPasswordEmail(formValues){
 
     fetch(apiData.url + 'reset-password', {
         method: 'POST',
@@ -126,15 +184,14 @@ function efbTryResetPassword(formValues){
         console.log(data)
         if (data.ok) {
             efbReturnResponse('E-mail de verificação enviado.', 'emu-notices')
+            efbConfirmCodeForm.style.display = efbConfirmCodeForm.style.display === 'none' ? 'flex' : 'none'; 
+            efbSendPasswordEmailForm.style.display  = efbSendPasswordEmailForm.style.display  === 'none' ? 'flex' : 'none';
         }
         if (data.errors) {
+            grecaptcha.reset(SendPasswordRecaptchaWidget)
             efbReturnResponse(data.errors, 'emu-notices-danger')
         }
     })
-    .catch(error => {
-        efbReturnResponse(`erro ${error}`, 'danger');
-    });
-
 }
 // Change Password
 function efbTryChangePassword(formValues){
@@ -158,7 +215,7 @@ function efbTryChangePassword(formValues){
         }
     })
     .catch(error => {
-        efbReturnResponse(`erro ${error}`, 'danger');
+        efbReturnResponse(`erro3 ${error}`, 'emu-notices-danger');
     });
 
 }
@@ -170,9 +227,8 @@ if (efbLoginForm){
 efbLoginForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
-
-    if ( ! recaptchaVerify(e.id) ) return recaptchaVerify(e.id);
-
+    
+    if ( ! recaptchaVerify(loginRecaptchaWidget) ) return false;
     const formData = new FormData(efbLoginForm);
 
     const formValues = Object.fromEntries(formData.entries());
@@ -187,10 +243,10 @@ efbRegisterForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
 
-    if ( ! recaptchaVerify(e.id) ) return recaptchaVerify(e.id);
-
+    if ( ! recaptchaVerify(RegisterRecaptchaWidget) ) return false;
+    
     const formData = new FormData(efbRegisterForm);
-
+    
     const formValues = Object.fromEntries(formData.entries());
 
     efbTryRegister(formValues)
@@ -198,8 +254,23 @@ efbRegisterForm.addEventListener('submit', (e) =>{
 })
 
 }
-if (efbResetPasswordForm){
+if (efbSendPasswordEmailForm){
     
+efbSendPasswordEmailForm.addEventListener('submit', (e) =>{
+
+    e.preventDefault()
+    if ( ! recaptchaVerify(SendPasswordRecaptchaWidget) ) return false;
+
+    const formData = new FormData(efbSendPasswordEmailForm);
+    const formValues = Object.fromEntries(formData.entries());
+
+    efbSendPasswordEmail(formValues)
+
+})
+
+}
+if (efbResetPasswordForm){
+
 efbResetPasswordForm.addEventListener('submit', (e) =>{
 
     e.preventDefault()
@@ -208,22 +279,26 @@ efbResetPasswordForm.addEventListener('submit', (e) =>{
 
     const formValues = Object.fromEntries(formData.entries());
 
-    efbTryResetPassword(formValues)
-
-})
-
-}
-if (efbChangePasswordForm){
-
-efbChangePasswordForm.addEventListener('submit', (e) =>{
-
-    e.preventDefault()
-
-    const formData = new FormData(efbChangePasswordForm);
-
-    const formValues = Object.fromEntries(formData.entries());
-
     efbTryChangePassword(formValues)
 
 })
+}
+if (efbConfirmCodeInput){
+
+efbConfirmCodeInput.addEventListener('input', (e)=>{
+    
+    if (e.target && e.target.value && e.target.value.length >= 5) {
+        e.target.value = e.target.value.substring(0,5);
+
+        e.target.setAttribute('readonly', true);
+
+        verifyResetCode(e.target.value.substring(0, 5));
+
+        setTimeout(()=>{
+            e.target.removeAttribute('readonly');
+        }, 500)
+    }
+    efbResetKeyInput.value = e.target.value;
+})
+
 }
