@@ -41,6 +41,7 @@ add_action('init', 'efb_post_type');
 
 // metabox
 function efb_metabox($post) {
+
     // Verifica se está no Post Type correto
     if ($post->post_type !== 'emu_form_builder') {
         return;
@@ -69,16 +70,5 @@ function efb_metabox($post) {
 
     </div>';
 }
+
 add_action('edit_form_after_title', 'efb_metabox');
-
-// shortcode
-function efb_shortcode($atts){
-    $atts = shortcode_atts(array(
-        'id' => NULL
-    ), $atts);
-
-    include_once EFB_PLUGIN_PATH . '/inc/form-templates/login-register.php';
-    
-    return efb_login_register();
-}
-add_shortcode('emu_form_builder', 'efb_shortcode');

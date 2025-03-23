@@ -170,5 +170,6 @@ function efb_login_register(){
     
     efbLoginScript();
 
-    return;
 }
+
+add_shortcode('emu_form_builder', 'efb_login_register');

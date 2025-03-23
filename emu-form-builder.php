@@ -24,6 +24,7 @@ require_once EFB_PLUGIN_PATH . '/inc/api/reset-password.php';
 require_once EFB_PLUGIN_PATH . '/inc/api/send-password-code.php';
 require_once EFB_PLUGIN_PATH . '/inc/api/confirm-code.php';
 require_once(EFB_PLUGIN_PATH . '/inc/functions/post-type.php');
-
-
+if(!is_admin()){
+    require_once EFB_PLUGIN_PATH . '/inc/form-templates/login-register.php';
+}
 require_once EFB_PLUGIN_PATH . '/builders/core.php';
