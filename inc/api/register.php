@@ -52,24 +52,25 @@ function efbRegister(WP_REST_Request $request) {
 }
 
 function ValidateFields($data) {
-    $error = [];
+
+    $errors = [];
 
     // Validação de nome de usuário
     if (get_user_by('login', $data['username'])) {
-        $error['username'] = 'exists'; // O nome de usuário já existe
+        $errors['username'] = 'exists'; // O nome de usuário já existe
     } elseif (!preg_match('/^[a-zA-Z0-9_-]+$/', $data['username'])) {
-        $error['username'] = 'invalid_chars'; // Nome de usuário com caracteres inválidos
+        $errors['username'] = 'invalid_chars'; // Nome de usuário com caracteres inválidos
     }
 
     // Validação de e-mail
     if (strpos($data['email'], '@') === false || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-        $error['email'] = 'invalid'; // E-mail inválido
+        $errors['email'] = 'invalid'; // E-mail inválido
     }
 
     // Validação de senha (mínimo de 7 caracteres)
     if (strlen($data['password']) < 7) {
-        $error['password'] = 'too_short'; // Senha muito curta
+        $errors['password'] = 'too_short'; // Senha muito curta
     }
 
-    return $error; // Retorna o array de erros, caso existam
+    return $errors; // Retorna o array de erros, caso existam
 }
