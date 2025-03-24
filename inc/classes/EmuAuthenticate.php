@@ -107,23 +107,31 @@ class EmuAuthenticate {
         $errors = [];
     
         // Validação de nome de usuário
-        if (get_user_by('login', $data['username'])) {
-            $errors['username'] = 'exists'; // O nome de usuário já existe
+        if (empty($data['username'])) {
+            $errors['username'] = 'O campo de nome de usuário está vazio';
+        } elseif (strlen($data['username']) < 5) {
+            $errors['username'] = 'O nome de usuário deve ter pelo menos 5 caracteres';
+        } elseif (get_user_by('login', $data['username'])) {
+            $errors['username'] = 'O nome de usuário já existe'; // O nome de usuário já existe
         } elseif (!preg_match('/^[a-zA-Z0-9_-]+$/', $data['username'])) {
-            $errors['username'] = 'invalid_chars'; // Nome de usuário com caracteres inválidos
+            $errors['username'] = 'Não é permitido símbolos no nome de usuário'; // Nome de usuário com caracteres inválidos
         }
     
         // Validação de e-mail
-        if (strpos($data['email'], '@') === false || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'invalid'; // E-mail inválido
+        if (empty($data['email'])) {
+            $errors['email'] = 'O campo de e-mail está vazio'; // E-mail vazio
+        } elseif (!sanitize_email($data['email'])) {
+            $errors['email'] = 'E-mail inválido'; // E-mail inválido
         }
     
-        // Validação de senha (mínimo de 7 caracteres)
-        if (strlen($data['password']) < 7) {
-            $errors['password'] = 'too_short'; // Senha muito curta
+        // Validação de senha (mínimo de 8 caracteres, pelo menos uma letra, um número e um caractere especial)
+        $passwordRegex = '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/';
+        if (!preg_match($passwordRegex, $data['password'])) {
+            $errors['password'] = 'Senha inválida'; // Senha inválida
         }
     
         return $errors; // Retorna o array de erros, caso existam
-    }
+    }    
+
 
 }

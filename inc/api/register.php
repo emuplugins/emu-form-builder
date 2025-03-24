@@ -32,7 +32,7 @@ function efbRegister(WP_REST_Request $request) {
     // Recuperando os dados da requisição
     $username = sanitize_text_field($request->get_param('username'));
     $password = wp_slash($request->get_param('password'));
-    $email = sanitize_email($request->get_param('email'));
+    $email = $request->get_param('email');
 
     // Validação dos campos
     // Dados a serem validados
@@ -41,6 +41,7 @@ function efbRegister(WP_REST_Request $request) {
         'password' => $password,
         'email' => $email
     ];
+    
     $validation_errors = $auth->ValidateFields($data);
 
     if (!empty($validation_errors)) {
