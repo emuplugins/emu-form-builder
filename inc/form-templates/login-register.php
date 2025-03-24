@@ -30,7 +30,7 @@ function efb_login_register($gSiteKey){
             </div>
 
             <div class="efb-form-group">    
-                <label for="remember" style="display: flex; gap: 10px;">
+                <label for="remember" style="display: flex;gap: 10px;flex-direction: row;align-items: center;">
                     <input type="checkbox" name="remember" id="remember">
                     Lembrar senha?
                 </label>
