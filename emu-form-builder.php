@@ -11,13 +11,14 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-if (is_admin()) {
-    require_once PLUGIN_DIR . 'update-handler.php';
-}
 // before header output
 
 define('EFB_PLUGIN_PATH', dirname(__FILE__));
 define('EFB_PLUGIN_URL', plugin_dir_url(__FILE__));
+
+if (is_admin()) {
+    require_once EFB_PLUGIN_PATH . '/update-handler.php';
+}
 
 require_once EFB_PLUGIN_PATH . '/inc/classes/EmuAuthenticate.php';
 require_once EFB_PLUGIN_PATH . '/inc/api/login.php';
