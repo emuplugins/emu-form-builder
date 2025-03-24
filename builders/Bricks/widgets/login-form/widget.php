@@ -152,6 +152,25 @@ class BricksEfbLoginForm extends \Bricks\Element {
 
     ];
 
+    $this->controls['stepsDimensions'] = [
+      'tab' => 'content',
+      'group' => 'Steps',
+      'label' => esc_html__( 'Padding', 'bricks' ),
+      'type' => 'dimensions',
+      'css' => [
+        [
+          'property' => 'padding',
+          'selector' => '.efb-steps li',
+        ]
+      ],
+      'default' => [
+        'top' => '0.8em',
+        'right' => '0.8em',
+        'bottom' => '0.8em',
+        'left' => '0.8em',
+      ],
+    ];
+
     // ENDSTEPS
 
     // FIELDS
@@ -223,6 +242,25 @@ class BricksEfbLoginForm extends \Bricks\Element {
         'style' => 'solid',
       ],
 
+    ];
+
+    $this->controls['fieldDimensions'] = [
+      'tab' => 'content',
+      'group' => 'Fields',
+      'label' => esc_html__( 'Padding', 'bricks' ),
+      'type' => 'dimensions',
+      'css' => [
+        [
+          'property' => 'padding',
+          'selector' => '.efb-multistep input, .efb-multistep textarea',
+        ]
+      ],
+      'default' => [
+        'top' => '0.8em',
+        'right' => '0.8em',
+        'bottom' => '0.8em',
+        'left' => '0.8em',
+      ],
     ];
 
     // ENDFIELDS
