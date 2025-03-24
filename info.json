@@ -1,0 +1,9 @@
+{
+  "name": "Emu Form Builder",
+  "slug": "emu-form-builder",
+  "version": "1.0.1",
+  "download_url": "https://github.com/emuplugins/emu-form-builder/archive/refs/heads/main.zip",
+  "tested": "6.4",
+  "requires": "5.8",
+  "author": "Emu Plugins"
+}
