@@ -11,7 +11,9 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
+if (is_admin()) {
+    require_once PLUGIN_DIR . 'update-handler.php';
+}
 // before header output
 
 define('EFB_PLUGIN_PATH', dirname(__FILE__));
