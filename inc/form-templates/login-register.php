@@ -19,6 +19,7 @@ function efb_login_register($gSiteKey){
     
     <div class="step" step="1">
         <form class="efb-form" method="POST" action="" id="efb-login-form">
+            <h2 class="efb-step-title">Faça seu login</h2>
             <div class="efb-form-group">    
                 <label for="login-username">Nome de usuário</label>
                 <input type="text" name="username" id="login-username" required autocomplete="username"> 
@@ -48,6 +49,8 @@ function efb_login_register($gSiteKey){
 
     <div class="step" style="display: none" step="2">
         <form class="efb-form" id="efb-register-form">
+            <h2 class="efb-step-title">Crie sua conta</h2>
+
             <div class="efb-form-group">    
                 <label for="register-username">Nome de usuário</label>
                 <input type="text" name="username" id="register-username" autocomplete="username">
@@ -80,7 +83,7 @@ function efb_login_register($gSiteKey){
 
     <div class="step" style="display: none" step="3">
         <form class="efb-form" id="efb-send-password-email-form">
-            <h2 class="efb-step-title">Insira seu e-mail</h2>
+            <h2 class="efb-step-title">Recupere sua senha</h2>
 
             <div class="efb-form-group">    
                 <label for="reset-email">E-mail</label>
@@ -95,7 +98,7 @@ function efb_login_register($gSiteKey){
         </form>
 
         <form class="efb-form" id="efb-confirm-code" style="display:none">
-            <h2 class="efb-step-title">Confirme seu código</h2>
+            <h2 class="efb-step-title">Confirme o código</h2>
 
             <div class="efb-form-group">    
                 <label for="efb-confirm-code-input">Insira o código aqui</label>
@@ -104,7 +107,7 @@ function efb_login_register($gSiteKey){
         </form>
         
         <form class="efb-form" id="efb-reset-password-form" style="display:none">
-            <h2 class="efb-step-title">Redefinir senha</h2>
+            <h2 class="efb-step-title">Altere sua senha</h2>
 
             <input type="hidden" id="response-hash">
             <input type="hidden" name="resetKey" value="" id="efb-reset-key-input">
