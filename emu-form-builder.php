@@ -5,7 +5,9 @@
  * Version:     1.0.0
  * Author:      Emu Plugins
  * License:     GPL-2.0+
- */
+ * Text Domain: emu-form-builder
+ * Domain Path: /languages
+*/
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
