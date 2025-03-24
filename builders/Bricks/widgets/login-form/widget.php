@@ -487,9 +487,11 @@ class BricksEfbLoginForm extends \Bricks\Element {
     );
 
     wp_enqueue_style(
-        'emu-login-handler',
-        EFB_PLUGIN_URL . 'assets/css/form.css'
-    );
+      'emu-login-handler',
+      EFB_PLUGIN_URL . 'assets/css/form.css',
+      array(),
+      time() // Sempre uma nova versão
+  );
 
     wp_enqueue_script(
         'emu-form-js',
