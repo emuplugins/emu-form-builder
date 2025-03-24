@@ -489,20 +489,21 @@ class BricksEfbLoginForm extends \Bricks\Element {
       'emu-login-handler',
       EFB_PLUGIN_URL . 'assets/css/form.css',
       array(),
-      time() // Sempre uma nova versão
+      time()
   );
 
     wp_enqueue_script(
         'emu-form-js',
-        EFB_PLUGIN_URL . 'assets/js/form.js'
+        EFB_PLUGIN_URL . 'assets/js/form.js',
+        array(),
+        time() 
     );
 
     wp_enqueue_script(
         'emu-login-handler',
         EFB_PLUGIN_URL . 'assets/js/login.js',
         array(),
-        null,
-        true 
+        time() 
     );
 
     $nonce = wp_create_nonce( 'wp_rest' );
