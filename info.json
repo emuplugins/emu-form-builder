@@ -5,5 +5,11 @@
   "download_url": "https://github.com/emuplugins/emu-form-builder/archive/refs/heads/main.zip",
   "tested": "6.4",
   "requires": "5.8",
-  "author": "Emu Plugins"
+  "author": "Emu Plugins",
+  "author_homepage": "https://angardagency.com",
+  "last_updated": "2025-02-12",
+  "sections": {
+    "description": "Nova versão com correções e melhorias.",
+    "changelog": "Adiciona novo option page para selecionar os posttypes desejados."
+  }
 }
