@@ -1,7 +1,41 @@
-document.addEventListener('DOMContentLoaded', () => {
+function EmuFormReady() {
+
+    const eventoEmuForm = new CustomEvent('emu_form_ready', {
+        bubbles: true,
+        cancelable: true
+    });
+
+    dispatchEvent(eventoEmuForm);
+}
+
+function changeInputsByClass() {
+    const element = document.querySelector('.efb-multistep');
+    const inputs = element.querySelectorAll('input');
+
+    inputs.forEach((input, index) => {
+        // Ignora os inputs hidden e checkbox
+        if (input.type !== 'hidden' && input.type !== 'checkbox') {
+            input.name = 'building';
+            input.type = 'text';
+            input.removeAttribute('autocomplete');
+            
+            // Adiciona o valor "Texto exemplo" ao primeiro campo
+            if (index === 0) {
+                input.value = 'Texto exemplo';
+            } else {
+                input.value = ''; // Limpa os outros campos
+            }
+        }
+    });
+}
+
+window.addEventListener('emu_form_ready', () => {
+
+    console.log('Evento emu_form_ready foi disparado!');
+
     const stepsButtons = document.querySelectorAll('.efb-steps li');
     const stepSections = document.querySelectorAll('.efb-multistep .step');
-    
+
     stepsButtons.forEach((s) => {
         s.addEventListener('click', (e) => {
 

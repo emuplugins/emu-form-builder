@@ -2,48 +2,10 @@
 
 if( ! defined('ABSPATH') ) exit;
 
-function efbLoginScript() {
-
-    wp_enqueue_script(
-        'google-recaptcha',
-        'https://www.google.com/recaptcha/api.js'
-    );
-
-    wp_enqueue_style(
-        'emu-login-handler',
-        EFB_PLUGIN_URL . 'assets/css/form.css'
-    );
-
-    wp_enqueue_script(
-        'emu-form-js',
-        EFB_PLUGIN_URL . 'assets/js/form.js',
-        array(),
-        null,
-        true 
-    );
-
-    wp_enqueue_script(
-        'emu-login-handler',
-        EFB_PLUGIN_URL . 'assets/js/login.js',
-        array(),
-        null,
-        true 
-    );
-
-    $nonce = wp_create_nonce( 'wp_rest' );
-    wp_localize_script( 'emu-login-handler', 'apiData', [
-        'nonce' => $nonce,
-        'url'   => rest_url( 'emu_plugins/v1/' ),
-    ]); 
-}
-
 // Retorna o formulário com os estilos e scripts incorporados
-function efb_login_register(){
-
-    $gSiteKey = '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7';
-
+function efb_login_register($gSiteKey){
+    
     ?>
-<div class="efb-multistep">
     
     <div class="efb-steps">
         <ul>
@@ -68,7 +30,7 @@ function efb_login_register(){
             </div>
 
             <div class="efb-form-group">    
-                <label for="remember">
+                <label for="remember" style="display: flex; gap: 10px;">
                     <input type="checkbox" name="remember" id="remember">
                     Lembrar senha?
                 </label>
@@ -118,7 +80,7 @@ function efb_login_register(){
 
     <div class="step" style="display: none" step="3">
         <form class="efb-form" id="efb-send-password-email-form">
-            <h2>Insira seu e-mail</h2>
+            <h2 class="efb-step-title">Insira seu e-mail</h2>
 
             <div class="efb-form-group">    
                 <label for="reset-email">E-mail</label>
@@ -133,7 +95,7 @@ function efb_login_register(){
         </form>
 
         <form class="efb-form" id="efb-confirm-code" style="display:none">
-            <h2>Confirme seu código</h2>
+            <h2 class="efb-step-title">Confirme seu código</h2>
 
             <div class="efb-form-group">    
                 <label for="efb-confirm-code-input">Insira o código aqui</label>
@@ -142,7 +104,7 @@ function efb_login_register(){
         </form>
         
         <form class="efb-form" id="efb-reset-password-form" style="display:none">
-            <h2>Redefinir senha</h2>
+            <h2 class="efb-step-title">Redefinir senha</h2>
 
             <input type="hidden" id="response-hash">
             <input type="hidden" name="resetKey" value="" id="efb-reset-key-input">
@@ -162,13 +124,17 @@ function efb_login_register(){
             </div>
         </form>
     </div>
-</div>
+<script> document.addEventListener('DOMContentLoaded', ()=>{
+    
+    EmuFormReady()
+});
+</script>
 
 
     <?php
 
     
-    efbLoginScript();
+    // efbLoginScript();
 
 }
 

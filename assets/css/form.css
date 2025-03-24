@@ -4,10 +4,8 @@ h1{
 
 .efb-multistep{
     width:500px;
-    margin: 0 auto;
     padding:25px;
-    border:solid 1px;
-    margin:25px auto;
+    border:solid 1px #e4e8f5;
     border-radius:10px;
 }
 
@@ -30,7 +28,6 @@ h1{
 }
 .efb-steps li{
     padding: 0.4em 0.8em;
-    background-color: #000;
     color:white;
     font-weight: 500;
     width: 100%;
@@ -40,10 +37,7 @@ h1{
     align-items: center;
     flex-grow:1;
     cursor: pointer;
-    opacity:0.4
-}
-.efb-steps li.active{
-    opacity:1;
+    transition:background-color .2s;
 }
 
 .emu-btn{
@@ -92,3 +86,43 @@ h1{
     flex-direction: column;
     gap:10px
 }
+
+
+/* Estilo base para o checkbox */
+input[type="checkbox"] {
+    -webkit-appearance: none; /* Remove o estilo padrão do navegador */
+    appearance: none;
+    height: auto;
+    width: 20px;
+    border: none!important; /* Borda clara */
+    border-radius: 3px; /* Bordas arredondadas */
+    background-color: white; /* Fundo branco */
+    position: relative;
+    cursor: pointer; /* Aponta que é clicável */
+    transition: all 0.2s ease; /* Transição suave */
+    aspect-ratio: 1; /* Mantém o checkbox quadrado */
+  }
+  
+  /* Estilo para o estado checado */
+  input[type="checkbox"]:checked {
+    background-color: #4CAF50!important; /* Cor de fundo quando marcado */
+    border-color: #4CAF50; /* Cor da borda quando marcado */
+  }
+  
+  /* Estilo para a marcação (check) */
+  input[type="checkbox"]:checked::after {
+    content: '\2713'; /* Símbolo de check */
+    position: absolute;
+    top: 50%; /* Centraliza verticalmente */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta a posição para o centro exato */
+    font-size: 18px;
+    color: white; /* Cor do check */
+  }
+  
+  /* Efeito de foco */
+  input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3); /* Sombra suave no foco */
+  }
+  
