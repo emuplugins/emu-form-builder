@@ -52,13 +52,21 @@ function efbRegister(WP_REST_Request $request) {
     // Se não houver erros de validação, cria o usuário
     $user_id = wp_create_user($username, $password, $email);
 
+    $first_name = ucfirst($username);
+
     if (!is_wp_error($user_id)) {
 
+        // Atualiza o nome do usuário
+        wp_update_user([
+            'ID' => $user_id,
+            'first_name' => $first_name, // Defina o nome
+        ]);
+    
         $user = new WP_User($user_id);
         $user->set_role('subscriber');
         wp_set_auth_cookie($user_id, true);
+        
         return new WP_REST_Response(['ok' => 1], 200);
-
     } else {
 
         // Se houver erro na criação do usuário, retorna a mensagem de erro
