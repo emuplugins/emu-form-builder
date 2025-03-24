@@ -148,7 +148,9 @@ function efbTryLogin(formValues){
         }, 3000);
         }
         if (data.error) {
-            grecaptcha.reset(loginRecaptchaWidget)
+            if (typeof grecaptcha !== "undefined"){
+                grecaptcha.reset(loginRecaptchaWidget)
+            }
             efbReturnResponse(data.error, 'emu-notices-danger')
         }
     })
@@ -182,7 +184,9 @@ function efbTryRegister(formValues){
         if (data.errors) {
 
             document.querySelector('#efb-notices').innerHTML = '';
-            grecaptcha.reset(RegisterRecaptchaWidget)
+            if (typeof grecaptcha !== "undefined"){
+                grecaptcha.reset(RegisterRecaptchaWidget)
+            }
             // se existirem vários erros
             if (typeof data.errors === 'object' && !Array.isArray(data.errors)) {
                 Object.keys(data.errors).forEach(key => {
@@ -219,7 +223,9 @@ function efbSendPasswordEmail(formValues){
             efbSendPasswordEmailForm.style.display  = efbSendPasswordEmailForm.style.display  === 'none' ? 'flex' : 'none';
         }
         if (data.errors) {
-            grecaptcha.reset(SendPasswordRecaptchaWidget)
+            if (typeof grecaptcha !== "undefined"){
+                grecaptcha.reset(SendPasswordRecaptchaWidget)
+            }
             efbReturnResponse(data.errors, 'emu-notices-danger')
         }
     })
