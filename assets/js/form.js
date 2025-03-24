@@ -31,8 +31,6 @@ function changeInputsByClass() {
 
 window.addEventListener('emu_form_ready', () => {
 
-    console.log('Evento emu_form_ready foi disparado!');
-
     const stepsButtons = document.querySelectorAll('.efb-steps li');
     const stepSections = document.querySelectorAll('.efb-multistep .step');
 

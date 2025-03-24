@@ -4,6 +4,7 @@ const efbRegisterForm = document.getElementById('efb-register-form');
 const efbSendPasswordEmailForm = document.getElementById('efb-send-password-email-form');
 const efbResetPasswordForm = document.getElementById('efb-reset-password-form');
 const efbConfirmCodeForm = document.getElementById('efb-confirm-code');
+const efbRecaptchaSiteKey = document.getElementById('efb-recaptcha-site-key')
 
 // capturando alguns inputs
 const efbConfirmCodeInput = document.getElementById('efb-confirm-code-input');
@@ -14,19 +15,22 @@ var RegisterRecaptchaWidget = efbRegisterForm.querySelector('.g-recaptcha-elemen
 var SendPasswordRecaptchaWidget = efbSendPasswordEmailForm.querySelector('.g-recaptcha-element');
 
 // definindo os recaptcha Widgets
-grecaptcha.ready(function() {
+if (typeof grecaptcha !== "undefined"){
+    grecaptcha.ready(function() {
 
-    loginRecaptchaWidget = grecaptcha.render(loginRecaptchaWidget,{
-        'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
+        loginRecaptchaWidget = grecaptcha.render(loginRecaptchaWidget,{
+            'sitekey' : efbRecaptchaSiteKey.value
+        });
+        RegisterRecaptchaWidget = grecaptcha.render(RegisterRecaptchaWidget,{
+            'sitekey' : efbRecaptchaSiteKey.value
+        });
+        SendPasswordRecaptchaWidget = grecaptcha.render(SendPasswordRecaptchaWidget,{
+            'sitekey' : efbRecaptchaSiteKey.value
+        });
+    
     });
-    RegisterRecaptchaWidget = grecaptcha.render(RegisterRecaptchaWidget,{
-        'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
-    });
-    SendPasswordRecaptchaWidget = grecaptcha.render(SendPasswordRecaptchaWidget,{
-        'sitekey' : '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7'
-    });
+}
 
-});
 
 // FUNCTIONS
 
@@ -57,7 +61,8 @@ function efbReturnResponse(message = null, cssClass = null, clearNotices = true)
 }
 // verifica se o recaptcha está vazio, a validação do código é feita no backend pela classe auth no php
 function recaptchaVerify(widgetId) {
-
+    
+    if (typeof grecaptcha == "undefined") return true;
     // Verifica a resposta do reCAPTCHA
     if (grecaptcha.getResponse(widgetId) === "") {
         // Se a resposta for vazia, exibe a mensagem de erro

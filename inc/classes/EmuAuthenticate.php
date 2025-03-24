@@ -4,12 +4,6 @@ if(!defined('ABSPATH'))exit;
 
 class EmuAuthenticate {
 
-    public $gSecretkey;
-
-    public function __construct() {
-        $this->gSecretkey = '6LfdJP0qAAAAALKnl2m_II3PahoyZw3Jq_rqstvl';
-    }
-
     private function get_user_ip() {
         if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
             return $_SERVER['HTTP_CF_CONNECTING_IP']; // Cloudflare
@@ -77,6 +71,13 @@ class EmuAuthenticate {
 
     public function recaptchaVerify($recaptchaResponse){
 
+        $gSiteKey = get_option('efb_grecaptcha_key');
+        $gSecretKey = get_option('efb_grecaptcha_secret');
+
+        if ( ! $gSiteKey ||  ! $gSecretKey){
+            return true;
+        }
+
         $recaptchaResponse = wp_slash($recaptchaResponse);
         $curl = curl_init();
 
@@ -85,7 +86,7 @@ class EmuAuthenticate {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => [
-                'secret' => $this->gSecretkey,
+                'secret' => $gSecretKey,
                 'response' => $recaptchaResponse,
             ]
         ]);

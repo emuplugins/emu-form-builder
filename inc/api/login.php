@@ -26,7 +26,7 @@ function efbLogin(WP_REST_Request $request) {
     $recaptchaResponse = $auth->recaptchaVerify($recaptchaResponse);
 
     if(!$recaptchaResponse){
-        return new WP_REST_Response(['error' => 'recaptcha invalid'], 200);
+        return new WP_REST_Response(['error' => 'Recaptcha inválido'], 200);
     }
     
     // limpando os dados...
@@ -38,7 +38,7 @@ function efbLogin(WP_REST_Request $request) {
     $user = wp_authenticate($username, $password);	
 
     if (is_wp_error($user)) {
-        return new WP_REST_Response(['error' => 'login incorrect'], 200);
+        return new WP_REST_Response(['error' => 'Usuário ou senha inválidos'], 200);
     }
 
 	// definindo o cookie que autentica o usuário

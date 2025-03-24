@@ -3,7 +3,7 @@
 if( ! defined('ABSPATH') ) exit;
 
 // Retorna o formulário com os estilos e scripts incorporados
-function efb_login_register($gSiteKey){
+function efb_login_register($gSiteKey = false){
     
     ?>
     
@@ -16,6 +16,7 @@ function efb_login_register($gSiteKey){
     </div>
     
     <div style="display:none;" id="efb-notices"></div>
+    <input type="hidden" id="efb-recaptcha-site-key" value="<?php echo $gSiteKey ?>">
     
     <div class="step" step="1">
         <form class="efb-form" method="POST" action="" id="efb-login-form">
@@ -36,10 +37,11 @@ function efb_login_register($gSiteKey){
                     Lembrar senha?
                 </label>
             </div>
-
-            <div class="efb-form-group">
-                <div class="g-recaptcha-element" data-sitekey="<?php echo $gSiteKey ?>"></div>
-            </div>
+            <?php if($gSiteKey) : ?>
+                <div class="efb-form-group">
+                    <div class="g-recaptcha-element" data-sitekey="<?php echo $gSiteKey ?>"></div>
+                </div>
+            <?php endif; ?>
 
             <div class="efb-form-group">
                 <button class="emu-btn emu-btn-primary">Entrar</button>
@@ -70,11 +72,11 @@ function efb_login_register($gSiteKey){
                 <label for="register-password-confirm">Repita a senha</label>
                 <input type="password" name="passwordConfirm" id="register-password-confirm" autocomplete="new-password">
             </div>
-
-            <div class="efb-form-group">
-                <div class="g-recaptcha-element" data-sitekey="<?php echo $gSiteKey ?>"></div>
-            </div>
-            
+            <?php if($gSiteKey) : ?>
+                <div class="efb-form-group">
+                    <div class="g-recaptcha-element" data-sitekey="<?php echo $gSiteKey ?>"></div>
+                </div>
+            <?php endif; ?>
             <div class="efb-form-group">
                 <button class="emu-btn emu-btn-primary">Registrar</button>
             </div>
@@ -89,9 +91,9 @@ function efb_login_register($gSiteKey){
                 <label for="reset-email">E-mail</label>
                 <input type="text" name="email" id="reset-email">
             </div>
-
-            <div class="g-recaptcha-element" data-sitekey="<?php echo $gSiteKey ?>"></div>
-
+            <?php if($gSiteKey) : ?>
+                <div class="g-recaptcha-element" data-sitekey="<?php echo $gSiteKey ?>"></div>
+            <?php endif; ?>
             <div class="efb-form-group">
                 <button class="emu-btn emu-btn-primary">Enviar e-mail</button>
             </div>

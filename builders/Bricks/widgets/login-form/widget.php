@@ -470,12 +470,21 @@ class BricksEfbLoginForm extends \Bricks\Element {
 
   // Enqueue element styles and scripts
   public function enqueue_scripts() {
-    
-    wp_enqueue_script(
-      'google-recaptcha',
-      'https://www.google.com/recaptcha/api.js'
-    );
 
+  $gSiteKey = get_option('efb_grecaptcha_key');
+  $gSiteSecret = get_option('efb_grecaptcha_secret');
+
+  if (!empty($gSiteKey) && !empty($gSiteSecret)) {
+      wp_enqueue_script(
+          'google-recaptcha',
+          'https://www.google.com/recaptcha/api.js',
+          [],
+          null,
+      );
+  }
+
+ 
+    
     wp_enqueue_style(
       'emu-login-handler',
       EFB_PLUGIN_URL . 'assets/css/form.css',
@@ -518,11 +527,15 @@ class BricksEfbLoginForm extends \Bricks\Element {
     // '_root' attribute is required (contains element ID, class, etc.)
     echo "<div {$this->render_attributes( '_root' )}>"; // Element root attributes
     echo "<div {$this->render_attributes('child')}>";
-    $gSiteKey = '6LfdJP0qAAAAAKkEyLb0goEc3cjmLWw10OF5_Qu7';
 
-    if ($gSiteKey){
-      efb_login_register($gSiteKey, true);
+    $gSiteKey = get_option('efb_grecaptcha_key');
+    $gSiteSecret = get_option('efb_grecaptcha_secret');
+
+    if (!$gSiteKey || !$gSiteSecret){
+      $gSiteKey = false;
     }
+
+    efb_login_register($gSiteKey);
 
     echo '</div></div>';
   }
