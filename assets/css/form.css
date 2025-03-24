@@ -81,7 +81,7 @@ input[type="checkbox"] {
     height: auto;
     width: 20px;
     border: none!important; /* Borda clara */
-    border-radius: 3px; /* Bordas arredondadas */
+    border-radius: 3px!important; /* Bordas arredondadas */
     background-color: white; /* Fundo branco */
     position: relative;
     cursor: pointer; /* Aponta que é clicável */
