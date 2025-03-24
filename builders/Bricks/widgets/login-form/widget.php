@@ -364,17 +364,7 @@ class BricksEfbLoginForm extends \Bricks\Element {
             ],
           ],
           'inline' => true,
-          'small' => true,
-          'default' => [
-            'width' => [
-              'top' => 0,
-              'right' => 0,
-              'bottom' => 0,
-              'left' => 0,
-            ],
-            'style' => 'none',
-          ],
-          
+          'small' => true,          
         ];
 
         $this->controls['buttonDimensions'] = [
