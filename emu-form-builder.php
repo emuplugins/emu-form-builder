@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Emu Form Builder
  * Description: A custom form builder for WordPress.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      Emu Plugins
  * License:     GPL-2.0+
  * Text Domain: emu-form-builder
