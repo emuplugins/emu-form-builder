@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists('\Bricks\Elements') ) return ;
+if ( get_template() !== 'bricks' ) return;
 
 add_action('init', function() {
     \Bricks\Elements::register_element( EFB_PLUGIN_PATH . '/builders/Bricks/widgets/login-form/widget.php');
