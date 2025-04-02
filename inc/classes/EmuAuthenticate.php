@@ -125,7 +125,7 @@ class EmuAuthenticate {
         }
     
         // Validação de senha (mínimo de 8 caracteres, pelo menos uma letra, um número e um caractere especial)
-        $passwordRegex = '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/';
+        $passwordRegex = '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,16}$/';
         if (!preg_match($passwordRegex, $data['password'])) {
             $errors['password'] = 'Senha inválida'; // Senha inválida
         }
