@@ -32,8 +32,8 @@ function efbResetPassword(WP_REST_Request $request) {
     
     if ($password){
         
-        if (strlen($password) < 8) {
-            return new WP_REST_Response(['errors' => 'Senha fraca, insira pelo menos 8 letras ou números'], 400);
+        if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,16}$/', $password)) {
+            return new WP_REST_Response(['errors' => 'Senha inválida. A senha deve ter entre 8 e 16 caracteres, incluindo pelo menos uma letra, um número e um símbolo (@#$%^&+=!).'], 400);
         }
 
         // está tudo certo, definindo a nova senha!
