@@ -84,10 +84,10 @@ window.addEventListener('emu_form_ready', () => {
         }
 
         // Verifica se a senha tem pelo menos 8 caracteres, incluindo letras e números
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,16}$/;
 
         if (!passwordRegex.test(password)) {
-            efbReturnResponse('Para sua segurança, a senha deve ter pelo menos 8 caracteres. Letras, números e símbolos.', 'emu-notices-danger');
+            efbReturnResponse('Para sua segurança, a senha deve ter pelo menos 8, a 16 caracteres. Letras, números e símbolos (@#$%^&+=!).', 'emu-notices-danger');
             return false;
         }
 
