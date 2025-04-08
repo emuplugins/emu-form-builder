@@ -129,12 +129,6 @@ function efb_login_register($gSiteKey = false){
             </div>
         </form>
     </div>
-<script> document.addEventListener('DOMContentLoaded', ()=>{
-    
-    EmuFormReady()
-});
-</script>
-
 
     <?php
 

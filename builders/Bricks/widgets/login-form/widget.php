@@ -55,6 +55,7 @@ class BricksEfbLoginForm extends \Bricks\Element {
       ],
       'inline' => true,
     ];
+    
     $this->controls['ActiveStepText'] = [
       'tab' => 'content',
       'group' => 'Steps',
@@ -280,6 +281,7 @@ class BricksEfbLoginForm extends \Bricks\Element {
           ],
           'inline' => true,
         ];
+        
         $this->controls['buttonTextHover'] = [
           'tab' => 'content',
           'group' => 'Buttons',
@@ -482,8 +484,6 @@ class BricksEfbLoginForm extends \Bricks\Element {
           null,
       );
   }
-
- 
     
     wp_enqueue_style(
       'emu-login-handler',

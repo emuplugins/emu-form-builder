@@ -82,7 +82,7 @@ input[type="checkbox"] {
     width: 20px;
     border: none!important; /* Borda clara */
     border-radius: 3px!important; /* Bordas arredondadas */
-    background-color: white; /* Fundo branco */
+    background-color: #dfe2e5; /* Fundo branco */
     position: relative;
     cursor: pointer; /* Aponta que é clicável */
     transition: all 0.2s ease; /* Transição suave */
