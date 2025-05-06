@@ -72,6 +72,14 @@ function efb_login_register($gSiteKey = false){
                 <label for="register-password-confirm">Repita a senha</label>
                 <input type="password" name="passwordConfirm" id="register-password-confirm" autocomplete="new-password">
             </div>
+			
+			<div class="efb-form-group">    
+				<label for="confirm" style="display: flex; flex-direction: row; align-items: center;">
+					<input type="checkbox" name="confirm" id="confirm" required style="margin-right:10px">
+					Concordo com a <a href="/politica-de-privacidade" target="_blank"  style="margin-left:5px; font-weight:700">política de privacidade</a>.
+				</label>
+			</div>
+			
             <?php if($gSiteKey) : ?>
                 <div class="efb-form-group">
                     <div class="g-recaptcha-element" data-sitekey="<?php echo $gSiteKey ?>"></div>
