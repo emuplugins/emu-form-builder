@@ -33,7 +33,8 @@ function efbRegister(WP_REST_Request $request) {
     $username = sanitize_text_field($request->get_param('username'));
     $password = wp_slash($request->get_param('password'));
     $email = $request->get_param('email');
-
+	$confirm = $request->get_param('confirm');
+	
     // Validação dos campos
     // Dados a serem validados
     $data = [
@@ -61,6 +62,8 @@ function efbRegister(WP_REST_Request $request) {
             'ID' => $user_id,
             'first_name' => $first_name, // Defina o nome
         ]);
+		
+		update_user_meta($user_id, 'privacy_policy', $confirm);
     
         $user = new WP_User($user_id);
         $user->set_role('subscriber');
