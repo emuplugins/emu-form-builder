@@ -191,7 +191,7 @@ window.addEventListener('emu_form_ready', () => {
         .then(response => response.json())
         .then(data => {
             if (data.ok) {
-                efbReturnResponse('Bem-vindo de volta, ' + data.name + ' !', 'emu-notices-success', true)
+                efbReturnResponse('Bem-vindo de volta, ' + data.name + '!', 'emu-notices-success', true)
                 setTimeout(() => {
                     location.reload();
             }, 3000);
