@@ -225,10 +225,10 @@ window.addEventListener('emu_form_ready', () => {
             console.log(data)
 
             if (data.ok) {
-                efbReturnResponse('Conta criada!. Redirecionando...', 'emu-notices-success', true)
+                efbReturnResponse('Conta criada! Redirecionando...', 'emu-notices-success', true)
                 setTimeout(() => {
                     location.reload();
-            }, 3000);
+            }, 1500);
             }
             if (data.errors) {
 
